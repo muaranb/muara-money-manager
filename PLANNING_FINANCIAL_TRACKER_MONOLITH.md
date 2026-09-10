@@ -1,8 +1,8 @@
-# ARCHITECTURAL PLANNING & IMPLEMENTATION SPECIFICATION (REVISED - V5.0 LUXURY EDITION)
-## Project: Next.js Serverless Monolith Financial Tracker (AI-Powered Banking & Legacy Ingestion with Dynamic Wallet Context, Multi-Dimensional Monthly Analytics, Strict Transfer Neutrality & World-Class UI/UX Pro Max Design)
+# ARCHITECTURAL PLANNING & IMPLEMENTATION SPECIFICATION (REVISED - V5.3 COMPREHENSIVE BRAND & DESIGN ENGINEERING MONOLITH EDITION)
+## Project: Next.js Serverless Monolith Financial Tracker (AI-Powered Banking & Legacy Ingestion with Dynamic Wallet Context, Multi-Dimensional Monthly Analytics, Strict Transfer Neutrality, Automatic Contra-Transfer Pairing, .agents Design Suite & Executive Slide Engine)
 **Target Execution Agent:** Antigravity CLI Coding Agent  
 **AI Model:** Gemini Flash 3.8 (High) / Dynamic (`process.env.GEMINI_MODEL || 'gemini-2.5-flash'`)  
-**Target Architecture:** Next.js 16+ App Router (Full-Stack Serverless Monolith) + React 19 + Tailwind CSS v4 (@theme inline OKLCH) + Shadcn UI (Radix Primitives) + Obsidian Glass Bento Grid Design System (UI-UX-PRO-MAX) + Tri-Stack Typography (Geist Sans + JetBrains Mono) + Turso (libSQL Edge) with Integer-Cents Precision + Google Gemini Official SDK (`@google/genai` v2+) + Recharts Ambient Glow Visualizations + Vercel Serverless  
+**Target Architecture:** Next.js 16+ App Router (Full-Stack Serverless Monolith) + React 19 + Tailwind CSS v4 (@theme inline OKLCH) + Shadcn UI (Radix Primitives) + .agents Unified Design Ecosystem (`brand`, `design-system`, `ui-styling`, `design`, `banner-design`, `slides`) + Artisan Obsidian & Tactile Metallic Design System (UI-UX-PRO-MAX) + Tri-Scale Tabular Typography (Geist Sans + JetBrains Mono) + Turso (libSQL Edge) with Integer-Cents Precision + Google Gemini Official SDK (`@google/genai` v2+) + Recharts & Chart.js Executive Visualizations + Vercel Serverless  
 **Supported Ingestion Sources (Empirically Calibrated):** 
 1. `data-example/BCA_AUG_2026.pdf` (Tahapan Xpresi / BCA e-Statement PDF - No. Rekening `0501191549`)
 2. `data-example/Dana.pdf` (DANA Riwayat Aktivitas E-Wallet PDF - No HP `081392366770`, 2 Halaman)
@@ -11,10 +11,10 @@
 5. `data-example/Money Manager - Excel.xlsx` (Legacy Master Backup Migration - 455 Historical Transactions, Excel Serial Dates)
 6. Real-time Screenshot Transaksi (QRIS, Mobile Banking Receipts, Struk Belanja Kasir)
 **Core Input Mode:** **Dual-Input Pipeline** = Multi-Format File/Image Upload + **Target Wallet Location Selector** (Pilihan Lokasi Wallet/Akun Sumber)  
-**Dedicated Reporting Core:** **Multi-Dimensional Monthly Dashboard (`/monthly`)** = Analisis Bulanan Keseluruhan (Overview & MoM) + Per Kategori (Hierarki Subkategori) + Per Judul (Merchant Leaderboard & Search)  
+**Dedicated Reporting Core:** **Multi-Dimensional Monthly Dashboard (`/monthly`)** = Analisis Bulanan Keseluruhan (Overview & MoM) + Per Kategori (Hierarki Subkategori) + Per Judul (Merchant Leaderboard & Search) + In-App Executive Presentation Exporter  
 **Accounting Standard:** **Strict Operational Cash Flow Isolation (Transfer Neutrality)** = Mutasi Pindah Uang / Transfer Antar-Wallet Tidak Dihitung sebagai Pengeluaran atau Pemasukan Operasional  
-**Design Standard:** **World-Class Luxury Fintech Terminal (UI-UX-PRO-MAX)** = Obsidian Glass Surfaces, Bento Grid Elevation, Tri-Stack Typography with Tabular Numbers, Kinetic Micro-Interactions, and iOS-Style Mobile Bottom Navigation  
-**Status:** READY FOR EXECUTION (V5.0 - LUXURY FINTECH & PRODUCTION ARCHITECTURE)
+**Design Standard:** **World-Class Bespoke Human Craft & Brand Engineering (.agents Ecosystem)** = Artisan Obsidian Canvas with Micro-Noise Texture, 3-Layer Token Pipeline (JSON → CSS → Tailwind v4), Tri-Scale Tabular Currency (<TabularCurrency />), Bespoke AI Vector Iconography, In-App Executive Monthly Deck Exporter (Chart.js), and Zero-AI Generic Clichés  
+**Status:** READY FOR EXECUTION (V5.3 - BRAND & DESIGN ENGINEERING MONOLITH ARCHITECTURE)
 
 ---
 
@@ -23,7 +23,7 @@
 ### 1.1 Project Overview
 Membangun sistem pelacak keuangan personal (*Personal Finance Tracker*) monolitik serverless berskala tinggi (*highly scalable*) yang di-deploy ke Vercel Serverless Functions dan Turso Database (libSQL Edge). 
 
-Pembaruan arsitektur pada versi **V5.0 Luxury Edition** ini menyempurnakan integritas akuntansi keuangan personal sekaligus menghadirkan standar estetika dan *user experience* kelas dunia:
+Pembaruan arsitektur pada versi **V5.3 Comprehensive Brand & Design Engineering Monolith Edition** ini menyempurnakan integritas akuntansi keuangan personal sekaligus menghadirkan ekosistem desain, identitas merk (*brand*), dan mesin presentasi eksekutif lengkap yang terintegrasi langsung dari folder `.agents`:
 1. **World-Class Luxury Fintech Aesthetic (UI-UX-PRO-MAX):** Standar visual sekelas Linear, Stripe, Mercury, dan Apple Card menggunakan palet *Obsidian Glass* (`#030712`), kartu modular *Bento Grid* berbalut *frosted glass* (`backdrop-blur-xl`), *hairline border* bergradasi cahaya (`border-white/[0.08]`), dan *ambient radial glow* halus.
 2. **Tri-Stack Typography with Zero Layout Jitter:** `Geist Sans` untuk antarmuka/heading dengan kerning presisi, dipadukan dengan `JetBrains Mono` bertipe `tabular-nums` untuk seluruh nominal uang dan saldo guna menjamin angka stabil tanpa pergeseran horizontal saat mutasi diperbarui.
 3. **Dual-Input AI Ingestion Engine (Data Inflow):** Pemrosesan dokumen multi-format (PDF BCA, PDF DANA, CSV blu BCA, XLSX Mandiri terenkripsi sandi `"01042001"`, berkas migrasi Money Manager, dan gambar struk kasir) yang dipadukan dengan pilihan lokasi wallet sumber (*wallet context*) untuk eliminasi ambiguitas aliran dana.
@@ -33,6 +33,8 @@ Pembaruan arsitektur pada versi **V5.0 Luxury Edition** ini menyempurnakan integ
    - **🏷️ Per Kategori (By Category):** Donut Chart proporsi alokasi dana + Accordion tabel hierarkis kategori induk yang dapat di-expand menampilkan subkategori lengkap dengan progress bar persentase dan nominal IDR.
    - **📝 Per Judul / Merchant (By Title):** Leaderboard peringkat pengeluaran terbesar per judul/merchant (`description`/`note`), memuat jumlah frekuensi transaksi, rata-rata pengeluaran per transaksi, persentase terhadap total bulanan, search bar instan, dan drawer rincian mutasi.
 6. **Automatic Contra-Transaction Pairing Engine (Transfer Auto-Detection):** Mesin rekonsiliasi cerdas yang secara otomatis mendeteksi transaksi debit dan kredit yang berlawanan arah antar dua dompet berbeda pada tanggal/waktu yang sama dengan nominal sen yang identik, baik di dalam sesi upload yang sama (*intra-batch*) maupun secara retroaktif terhadap transaksi lama di database Turso (*cross-batch*). Pasangan ini otomatis dinormalkan menjadi `type = 'TRANSFER'` dan dihubungkan via `transferPairId` ke kategori `🔄 Pindah Uang` sehingga terbebas dari inflasi beban belanja atau pemasukan semu.
+7. **Anti-AI Generic Design Principles (Bespoke Human Craft):** Eliminasi total ciri khas visual klise template AI generik (larangan floating neon gradient blobs, larangan emoji-as-icon, larangan grid 3-kartu simetris). Mengadopsi standar pengerjaan tangan mewah sekelas Linear, Stripe Press, dan Apple Card: latar obsidian bertekstur micro-grain noise (1.8% opacity), kartu bento ber-hairline border dengan specular top-edge highlight, representasi kartu fisik bank otentik (Mandiri Platinum dengan brass EMV chip SVG, BCA Navy-Gold, DANA Cyan), format mata uang 3 hierarki visual (`<TabularCurrency />`), dan tautan visual Contra-Pair Tether.
+8. **.agents Design & Brand Engineering Monolith:** Penyatuan 7 sub-skill dari `.agents`: pedoman brand resmi (`docs/brand-guidelines.md`), pipeline token 3-lapis (`assets/design-tokens.json` $\rightarrow$ `assets/design-tokens.css` $\rightarrow$ Tailwind v4 `@theme inline`), suite generator aset visual AI (monogram Muara, vektor chip EMV, ikon contra-tether), dan modul in-app ekspor presentasi laporan keuangan eksekutif berbasis Chart.js.
 
 ### 1.2 Urgensi Input Lokasi Wallet (Why Wallet Location Input is Critical)
 1. **Ambiguitas Struk Fisik & Screenshot QRIS:** Struk belanja kasir (Indomaret, SPBU, resto) atau screenshot konfirmasi QRIS merchant seringkali **tidak memuat nama bank/e-wallet** sumber pembayaran (hanya nominal dan nama toko). Dengan adanya input "Lokasi Wallet", sistem dan AI mengetahui secara pasti akun mana yang saldonya berkurang.
@@ -1035,10 +1037,13 @@ Setiap fase diselesaikan, diuji, dan divalidasi secara berurutan.
   npm install @google/genai @libsql/client drizzle-orm zod zod-to-json-schema lucide-react exceljs msoffice-crypto zustand clsx tailwind-merge recharts cmdk framer-motion @fontsource/geist-sans @fontsource/jetbrains-mono
   npm install -D drizzle-kit dotenv vitest @testing-library/react @testing-library/jest-dom jsdom @playwright/test @tailwindcss/postcss
   ```
-- [ ] **Task 1.4:** Setup Design System Tokens di `src/app/globals.css`:
-  * Konfigurasi Tailwind CSS v4 `@theme inline` dengan palet semantik OKLCH dari `design-system/muara-money-manager/MASTER.md`.
+- [ ] **Task 1.4:** Setup 3-Layer Design System Tokens & Brand Pipeline:
+  * Konfigurasi pedoman brand di `docs/brand-guidelines.md` sebagai single source of truth identitas visual.
+  * Buat `assets/design-tokens.json` dengan hierarki 3-layer (Primitives -> Semantic OKLCH -> Component tokens).
+  * Jalankan `node scripts/sync-brand-tokens.cjs` untuk mengompilasi ke `assets/design-tokens.css`.
+  * Impor `assets/design-tokens.css` di `src/app/globals.css` dengan Tailwind CSS v4 `@theme inline`.
   * Konfigurasi font family `font-sans` (`Geist Sans`) dan `font-mono` (`JetBrains Mono` tabular figures).
-  * Setup kelas utilitas Bento Grid (`.bento-card`), glassmorphism backdrop blur, dan hairline border.
+  * Setup kelas utilitas Bento Grid (`.bento-card`, `.artisan-card`), micro-noise overlay (`.bg-artisan-noise`), dan hairline specular border.
 - [ ] **Task 1.5:** Setup environment variables di `.env.example` dan `.env.local`:
   * `TURSO_DATABASE_URL`
   * `TURSO_AUTH_TOKEN`
@@ -1046,6 +1051,10 @@ Setiap fase diselesaikan, diuji, dan divalidasi secara berurutan.
   * `GEMINI_MODEL=gemini-2.5-flash`
 - [ ] **Task 1.6:** Setup konfigurasi `vitest.config.ts` untuk pengujian TDD dan `playwright.config.ts` untuk E2E.
 - [ ] **Task 1.7:** Konfigurasi `next.config.ts` dengan `serverActions: { bodySizeLimit: '20mb' }` untuk mendukung unggah dokumen statement besar.
+- [ ] **Task 1.8:** Generate Bespoke Brand & Icon Assets via `.agents` Design Suite:
+  * Jalankan `python .agents/skills/design/scripts/logo/generate.py` untuk memproduksi logo resmi Muara monogram 'M' (`public/brand/logo.svg`, `public/brand/logo-mark.svg`, `public/favicon.ico`).
+  * Jalankan `python .agents/skills/design/scripts/icon/generate.py` (`gemini-3.1-pro-preview`) untuk memproduksi vektor SVG kustom: chip EMV kartu kredit (`src/components/icons/bespoke/emv-chip.tsx`), glyph tether transfer contra (`src/components/icons/bespoke/tether-link.tsx`), dan emblem perbankan.
+  * Buat banner pratinjau media sosial OpenGraph 1200x630px di `public/brand/muara-og-card.png`.
 
 ---
 
@@ -1179,6 +1188,11 @@ Setiap fase diselesaikan, diuji, dan divalidasi secara berurutan.
   * Tabel transaksi dense berkecepatan 60fps dengan sticky header dan hairline dividers.
   * Filter multi-dimensi (Lokasi Wallet, Rentang Tanggal, Kategori, Tipe Mutasi).
   * Modal/Sheet Tambah Transaksi Cepat (*Quick Add Transaction*) dengan input wajib Lokasi Wallet Sumber.
+- [ ] **Task 6.11:** Bangun Generator Presentasi Keuangan Eksekutif (`slides` Skill Integration):
+  * Buat modul generator `src/lib/export/executive-deck-generator.ts` yang mengompilasi agregasi bulanan ke dalam format HTML mandiri beranimasi Chart.js.
+  * Terapkan struktur narasi eksekutif 5-slide (Executive Summary -> Net Cashflow Delta -> Expense Allocation -> Transfer Neutrality Audit -> Capital Runway).
+  * Buat Server Action `exportExecutiveDeckAction(yearMonth)` di `src/actions/export-slides-action.ts` untuk men-generate dan mengunduh berkas `.html`.
+  * Pasang tombol `[ 📊 Ekspor Presentasi Eksekutif ]` pada toolbar header `src/components/monthly/monthly-header.tsx`.
 
 ---
 
@@ -1208,6 +1222,9 @@ Setiap fase diselesaikan, diuji, dan divalidasi secara berurutan.
     * Commit batch -> verifikasi kedua transaksi di database kini berstatus `type = 'TRANSFER'` dan terhubung dengan `transferPairId`.
     * Kunjungi `/monthly?month=2026-08` -> verifikasi Total Pengeluaran dan Total Pemasukan TIDAK bertambah Rp 32.771.
 - [ ] **Task 7.3:** Uji ketahanan kesalahan: file corrupt, password Excel salah, dan simulasi penanganan kuota Gemini API (HTTP 429).
+- [ ] **Task 7.4:** Uji Kepatuhan Sistem Desain & Generator Presentasi (`.agents` Testing):
+  * `tests/unit/token-validator.test.ts`: Uji otomatis untuk memastikan tidak ada *hardcoded hex color* pada komponen antarmuka inti dan seluruh token OKLCH terdefinisi.
+  * `tests/unit/slide-generator.test.ts`: Uji unit untuk memvalidasi keluaran HTML generator presentasi eksekutif (memverifikasi struktur HTML, keberadaan skrip Chart.js, dan akurasi angka agregasi kas bulanan).
 
 ---
 
@@ -1328,6 +1345,170 @@ Didefinisikan pada `src/app/globals.css` dengan mapping `@theme inline`:
 * **Motion Accessibility:** Seluruh animasi menghormati konfigurasi OS pengguna melalui media query `prefers-reduced-motion: reduce`.
 * **Zero Emojis in UI Chrome:** Semua ikon navigasi, status, dan tombol wajib menggunakan SVG Lucide (`lucide-react`). Emoji hanya diizinkan sebagai label taksonomi kategori/subkategori pengguna.
 
+### 7.9 Anti-AI Generic Design Principles & Bespoke Human Craft Guidelines
+
+Section ini menetapkan standar wajib untuk mengeliminasi kesan template web generik buatan AI (*AI Generic Website*) dan menghadirkan karya pengerjaan tangan (*bespoke human craft*) tingkat tinggi yang setara dengan Linear, Stripe Press, Mercury, dan Apple Card.
+
+#### 7.9.1 Anti-Cliché Blacklist & Human Craft Mandates
+| AI Generic Cliché (❌ DILARANG KERAS) | Bespoke Human Craft Standard (✅ WAJIB DIGUNAKAN) | Implementasi Teknis |
+| :--- | :--- | :--- |
+| **Floating Gradient Blobs** | **Crisp Hairline Specular Borders & Micro-Noise** | `border border-white/[0.08] shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]` + SVG micro-noise overlay (1.8% opacity) |
+| **Emoji-as-Icons** (`💰, 💳, 📈, 🚀`) | **Engineered 1.5px Vector Glyphs** | Lucide / Radix icons dengan fixed `strokeWidth={1.5}` dan monochrome/tonal tinting |
+| **Symmetrical 3-Card Columns** | **Asymmetric Hierarchical Bento Grid** | 2x1 Hero Card + 1x1 Metric Cards + 1x1 Physical Bank Card + Full-Width Dense Ledger |
+| **Unformatted Currency** (`Rp 10.500.000`) | **Tri-Scale Tabular Currency Hierarchy** | `Rp` (11px muted) + `10.500.000` (24-30px bold white tabular-nums) + `,00` (11px muted) |
+| **Generic Marketing Buzzwords** | **Institutional Accounting Ledger Micro-Copy** | "Net Cashflow Delta", "Contra Offset Neutralized", "Intra-Account Transfer", "Unreconciled Staging" |
+| **Generic Hover / 0ms Instant Snaps** | **Tactile Spring Physics** | `active:scale-[0.985] active:translate-y-[0.5px]` dengan `transition: transform 150ms cubic-bezier(0.16, 1, 0.3, 1)` |
+| **Flat Generic Bank Badges** | **Authentic Physical Bank Card Metaphors** | Mandiri Platinum (brushed sheen + EMV chip SVG + masked `•••• 5927`), BCA Navy-Gold, DANA Cyan, Tunai Emerald |
+| **Disjointed Transfer Rows** | **Contra-Pair Tether Link Indicator** | Interactive linked badge/line showing debit-credit connection; hovering highlights both counter-parties |
+
+#### 7.9.2 Micro-Noise & Specular Surface Classes
+```css
+/* Noise Texture Background */
+.bg-artisan-noise {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.018'/%3E%3C/svg%3E");
+}
+
+/* Artisan Specular Bento Card */
+.artisan-card {
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.06), 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+  border-radius: 1rem; /* 16px */
+  transition: all 200ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.artisan-card:hover {
+  border-color: rgba(255, 255, 255, 0.16);
+  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.12), 0 12px 40px 0 rgba(0, 0, 0, 0.5);
+  transform: translateY(-2px);
+}
+```
+
+#### 7.9.3 Tri-Scale Tabular Currency Component (`<TabularCurrency />`)
+Dibuat di `src/components/ui/tabular-currency.tsx` untuk memastikan representasi moneter memiliki hierarki tipografi berkelas:
+```tsx
+import { cn } from "@/lib/utils";
+
+interface TabularCurrencyProps {
+  cents: number;
+  size?: "sm" | "md" | "lg" | "hero";
+  tone?: "neutral" | "positive" | "negative" | "transfer";
+  className?: string;
+}
+
+export function TabularCurrency({ cents, size = "md", tone = "neutral", className }: TabularCurrencyProps) {
+  const isNegative = cents < 0;
+  const absCents = Math.abs(cents);
+  const rupiah = Math.floor(absCents / 100);
+  const sen = absCents % 100;
+  const formattedRupiah = new Intl.NumberFormat("id-ID").format(rupiah);
+  const formattedSen = sen.toString().padStart(2, "0");
+
+  const sizeStyles = {
+    sm: { prefix: "text-[10px]", main: "text-sm", sen: "text-[10px]" },
+    md: { prefix: "text-xs", main: "text-lg", sen: "text-xs" },
+    lg: { prefix: "text-xs", main: "text-2xl", sen: "text-xs" },
+    hero: { prefix: "text-sm", main: "text-3xl sm:text-4xl", sen: "text-sm" },
+  }[size];
+
+  const toneStyles = {
+    neutral: "text-slate-100",
+    positive: "text-emerald-400",
+    negative: "text-rose-400",
+    transfer: "text-indigo-400",
+  }[tone];
+
+  return (
+    <span className={cn("inline-flex items-baseline font-mono tabular-nums tracking-tight", className)}>
+      {isNegative && <span className="mr-0.5 text-rose-400 font-bold">-</span>}
+      <span className={cn("text-neutral-500 font-normal mr-0.5 select-none", sizeStyles.prefix)}>Rp</span>
+      <span className={cn("font-bold tracking-tight", toneStyles, sizeStyles.main)}>{formattedRupiah}</span>
+      <span className={cn("text-neutral-500 font-medium ml-0.5 select-none", sizeStyles.sen)}>,{formattedSen}</span>
+    </span>
+  );
+}
+```
+
+#### 7.9.4 Asymmetric Bento Grid Blueprint for Monthly Dashboard (`/monthly`)
+```text
++---------------------------------------------------------------------------------------------------+
+| Top App Header: Period Picker (e.g. "Agustus 2026"), Quick Search, Action Shortcuts [Import][Sync] |
++---------------------------------------------------------------------------------------------------+
+| BENTO ROW 1 (Asymmetric Metrics):                                                                 |
+| +-----------------------------------------------+ +-----------------------+ +--------------------+ |
+| | SLOT A: HERO NET DELTA (Col Span 2)          | | SLOT B: BURN RATE     | | SLOT C: TOP CAT.   | |
+| | - Saldo Bersih: Rp 14.850.000,00 (+12.4%)     | | - Rata-rata harian:   | | - Makanan & Minuman| |
+| | - Inflow / Outflow Micro Bar Progress         | |   Rp 245.000 / hari   | |   Rp 4.250.000     | |
+| | - 30-Day Cumulative Mini Cashflow Sparkline   | | - Runway: 68 hari     | |   (31% of Outflow) | |
+| +-----------------------------------------------+ +-----------------------+ +--------------------+ |
++---------------------------------------------------------------------------------------------------+
+| BENTO ROW 2 (Bank Accounts & Neutrality Status):                                                  |
+| +-----------------------+ +-----------------------------------------------------------------------+ |
+| | SLOT D: XFER NEUTRAL  | | SLOT E: PHYSICAL BANK CARDS CAROUSEL / GRID                           | |
+| | - Rp 18.500.000 (100%)| | +-----------------+ +-----------------+ +-----------------+           | |
+| |   Contra-Paired Offset| | | Mandiri Platinum| | BCA Priority    | | DANA Premium    |           | |
+| | - Zero Net Impact     | | | [Chip] •••• 5927| | [Logo] •••• 1042| | [Cyan] •••• 8821|           | |
+| |   on Inflow / Outflow | | +-----------------+ +-----------------+ +-----------------+           | |
+| +-----------------------+ +-----------------------------------------------------------------------+ |
++---------------------------------------------------------------------------------------------------+
+| BENTO ROW 3 (Dense Transaction Ledger):                                                           |
+| +-----------------------------------------------------------------------------------------------+ |
+| | SLOT F: HIGH-DENSITY LEDGER (Col Span 4)                                                      | |
+| | - Tabs: [Semua Transaksi] [Hanya Mutasi Riil] [Transfer Antar-Akun] [Kategori] [Per Judul]     | |
+| | - Table Features: Sticky Date Dividers, Tabular Nums, Bank Badges, Contra Tether Links         | |
+| | - Expandable Transaction Drawer for Split & Contra Reconciliation                             | |
+| +-----------------------------------------------------------------------------------------------+ |
+```
+
+#### 7.9.5 Authentic Physical Bank Card Specifications (`<PhysicalBankCard />`)
+- **Bank Mandiri Platinum:** Gradient `from-[#0d1e3a] via-[#162d55] to-[#0a1527]`, brushed platinum sheen, brass EMV chip vector (18x14px), masked account `•••• 5927`.
+- **BCA Priority / Xpresi:** Gradient `from-[#081b3b] to-[#040d1e]`, ultra-fine 1px gold hairline border (`border-[#d4af37]/30`), crisp BCA vector emblem, masked `•••• 1042`.
+- **DANA E-Wallet:** Deep cyan card `from-[#08355b] to-[#0b223d]`, subtle DANA blue ambient edge, masked phone `•••• 8821`.
+- **Tunai / Cash Wallet:** Rich obsidian emerald weave `from-[#0d2319] to-[#06120d]`, banknote tactile texture.
+- **Micro-Interactions:** `hover:-translate-y-1 hover:shadow-[0_12px_24px_rgba(0,0,0,0.5)] active:scale-[0.985] transition-all duration-200`.
+
+#### 7.9.6 Contra-Pair Tether Indicator (`<ContraPairTether />`)
+- Visualisasi hubungan transfer antar dua rekening dengan chip interaktif `[⇄ Contra-Paired #TR-8821]`.
+- Hovering chip menyoroti (highlight) kedua baris transaksi berpasangan (debit & kredit) di tabel secara bersamaan.
+- Drawer drill-down memverifikasi offset transfer antar-akun dengan status zero-sum: `Net Cash Impact: Rp 0,00`.
+
+#### 7.9.7 Institutional Accounting Micro-Copy Dictionary
+- Wajib menggunakan istilah akuntansi institusional terpercaya (`Net Cashflow Delta`, `Operating Outflow`, `Contra Offset`, `Contra-Pair Reconciled`, `Unreconciled Staging Ledger`).
+- Larangan keras kata-kata hype marketing klise AI (*"AI magic"*, *"Supercharge your finances"*, *"Oops nothing here"*).
+
+### 7.10 .agents Design Ecosystem Integration & Executive Slide Deck Engine
+
+Section ini mendefinisikan integrasi arsitektural dari 7 keahlian desain `.agents` (`brand`, `design-system`, `ui-styling`, `design`, `banner-design`, `slides`, `ui-ux-pro-max`) ke dalam codebase Muara Money Manager.
+
+#### 7.10.1 Automated 3-Layer Token Synchronization
+Sistem desain menggunakan pipeline terotomatisasi yang menghubungkan pedoman visual ke kode produksi:
+1. `docs/brand-guidelines.md`: Single Source of Truth filosofi brand, warna, dan tipografi.
+2. `assets/design-tokens.json`: Deklarasi token terstruktur 3-layer (Primitives -> Semantic OKLCH -> Component).
+3. `scripts/sync-brand-tokens.cjs`: Skrip Node.js yang membaca `design-tokens.json` dan menghasilkan `assets/design-tokens.css`.
+4. `src/app/globals.css`: Mengimpor `assets/design-tokens.css` dan memetakan variabel ke Tailwind CSS v4 `@theme inline`.
+
+#### 7.10.2 Bespoke Generative Asset Suite (`design`, `logo`, `icon`, `banner-design`)
+Menggantikan seluruh dependensi gambar eksternal dan ikon generik dengan aset yang digenerate oleh AI bawaan `.agents`:
+- **Logo Monogram Muara:** Dihasilkan via `python .agents/skills/design/scripts/logo/generate.py` ke `public/brand/logo.svg` dan `public/brand/logo-mark.svg`.
+- **Ikon Vektor SVG Kustom:** Dihasilkan via `python .agents/skills/design/scripts/icon/generate.py` (`gemini-3.1-pro-preview`) menghasilkan teks XML SVG untuk chip EMV kuningan (`src/components/icons/bespoke/emv-chip.tsx`), rantai contra-tether, dan logo institusi perbankan.
+- **OpenGraph Social Preview Card:** Banner 1200x630px di `public/brand/muara-og-card.png` yang dirancang dengan rasio safe-zone 80% untuk pratinjau sosial (WhatsApp, Twitter/X, LinkedIn).
+
+#### 7.10.3 In-App Executive Monthly Deck Exporter (`slides` Skill Engine)
+Modul pelaporan eksekutif yang memungkinkan pengguna mengekspor presentasi HTML mandiri dari halaman `/monthly`:
+- **Engine Path:** `src/lib/export/executive-deck-generator.ts`
+- **Pemicu UI:** Tombol `[ 📊 Ekspor Presentasi Eksekutif ]` pada toolbar `/monthly`.
+- **Fitur Berkas HTML Ekspor:**
+  * Berkas `.html` mandiri (*self-contained*) tanpa server dependencies; dapat dibuka secara offline di browser apapun.
+  * Menggunakan pustaka Chart.js (UMD) dengan palet tema gelap Obsidian resmi.
+  * Navigasi keyboard terintegrasi (Panah Kiri/Kanan, Spasi, Tombol `F` untuk Fullscreen).
+  * Struktur narasi eksekutif 5-slide berbasis *Duarte Sparkline Arc*:
+    1. *Slide 1: Executive Summary* — Total Kekayaan Bersih (Net Worth), periode pelaporan, dan ringkasan eksekutif.
+    2. *Slide 2: Operating Cashflow Delta* — Pemasukan vs Pengeluaran murni, rasio tabungan (*savings rate %*), dan tren arus kas.
+    3. *Slide 3: Expense Allocation & Burn Rate* — Donut chart proporsi kategori belanja dan daftar 5 pusat biaya terbesar.
+    4. *Slide 4: Transfer Neutrality Audit* — Pembuktian rekonsiliasi transfer antar-akun internal dengan *Net Impact: Rp 0,00*.
+    5. *Slide 5: Capital Runway & Outlook* — Estimasi daya tahan likuiditas (hari runway), analisis MoM velocity, dan proyeksi bulan depan.
+
 ---
 
 ## 8. Directory Structure Reference
@@ -1340,81 +1521,104 @@ Didefinisikan pada `src/app/globals.css` dengan mapping `@theme inline`:
 ├── playwright.config.ts
 ├── tsconfig.json
 ├── vitest.config.ts
-├── design-system/                          # Master Design System (UI-UX-PRO-MAX)
+├── docs/                                     # Dokumentasi & Panduan Brand Resmi
+│   └── brand-guidelines.md                   # Single Source of Truth Identitas Brand & Voice
+├── assets/                                   # Sumber Aset & Desain Token 3-Layer
+│   ├── design-tokens.json                    # Deklarasi Token Primitives -> Semantic -> Component
+│   └── design-tokens.css                     # Compiled CSS Variables untuk Tailwind v4 & Slides
+├── scripts/                                  # Skrip Otomasi & Sinkronisasi Token
+│   └── sync-brand-tokens.cjs                 # Generator sinkronisasi design-tokens.json -> CSS
+├── design-system/                            # Master Design System (UI-UX-PRO-MAX)
 │   └── muara-money-manager/
-│       ├── MASTER.md                       # Single Source of Truth Desain & Token OKLCH
-│       └── pages/                          # Override spesifik per halaman
-├── data-example/                           # Fixture contoh dokumen mutasi aktual pengguna
-│   ├── BCA_AUG_2026.pdf                    # Statement BCA Tahapan Xpresi
-│   ├── Dana.pdf                            # Statement DANA Riwayat Aktivitas
-│   ├── blubca_Agustus2026.csv              # Statement CSV blu by BCA Digital
-│   ├── Mandiri-Agu-2026.xlsx               # Statement Excel Mandiri terenkripsi sandi "01042001"
-│   └── Money Manager - Excel.xlsx          # Master migrasi 455 transaksi historis
+│       ├── MASTER.md                         # Panduan Arsitektur Desain, Anti-Cliché & Token OKLCH
+│       └── pages/                            # Override spesifik per halaman
+├── public/
+│   ├── favicon.ico
+│   └── brand/                                # Logo Resmi & Aset Grafis Pre-Generated
+│       ├── logo.svg                          # Logo Lockup Muara
+│       ├── logo-mark.svg                     # Monogram 'M' Icon Only
+│       └── muara-og-card.png                 # OpenGraph Social Preview Banner (1200x630px)
+├── data-example/                             # Fixture contoh dokumen mutasi aktual pengguna
+│   ├── BCA_AUG_2026.pdf                      # Statement BCA Tahapan Xpresi
+│   ├── Dana.pdf                              # Statement DANA Riwayat Aktivitas
+│   ├── blubca_Agustus2026.csv                # Statement CSV blu by BCA Digital
+│   ├── Mandiri-Agu-2026.xlsx                 # Statement Excel Mandiri terenkripsi sandi "01042001"
+│   └── Money Manager - Excel.xlsx            # Master migrasi 455 transaksi historis
 ├── e2e/
-│   ├── ingestion-flow.spec.ts              # Pengujian E2E Playwright alur upload & commit
-│   └── monthly-dashboard.spec.ts           # Pengujian E2E Playwright Dashboard Bulanan (Uji Netralitas Transfer)
+│   ├── ingestion-flow.spec.ts                # Pengujian E2E Playwright alur upload & commit
+│   └── monthly-dashboard.spec.ts             # Pengujian E2E Playwright Dashboard Bulanan (Uji Netralitas Transfer)
 ├── src/
 │   ├── app/
-│   │   ├── globals.css                     # OKLCH Semantic Tokens + Tailwind v4 @theme inline + Bento styles
-│   │   ├── layout.tsx                      # App Shell, Font Ingestion, & Sidebar responsif
-│   │   ├── page.tsx                        # Dashboard ringkasan finansial utama (Net Worth Hero Bento)
+│   │   ├── globals.css                       # OKLCH Semantic Tokens + Tailwind v4 @theme inline + Bento styles
+│   │   ├── layout.tsx                        # App Shell, Font Ingestion, & Sidebar responsif
+│   │   ├── page.tsx                          # Dashboard ringkasan finansial utama (Net Worth Hero Bento)
 │   │   ├── monthly/
-│   │   │   └── page.tsx                    # Halaman Dashboard Bulanan (?month=YYYY-MM)
+│   │   │   └── page.tsx                      # Halaman Dashboard Bulanan (?month=YYYY-MM)
 │   │   ├── import/
-│   │   │   └── page.tsx                    # Halaman Dual-Input (Wallet Selector + Dropzone + Staging Table)
+│   │   │   └── page.tsx                      # Halaman Dual-Input (Wallet Selector + Dropzone + Staging Table)
 │   │   ├── transactions/
-│   │   │   └── page.tsx                    # Daftar transaksi, filter lokasi wallet, quick add
+│   │   │   └── page.tsx                      # Daftar transaksi, filter lokasi wallet, quick add
 │   │   └── accounts/
-│   │       └── page.tsx                    # Grid 16 rekening, saldo, & transfer reconciliation
+│   │       └── page.tsx                      # Grid 16 rekening, saldo, & transfer reconciliation
 │   ├── actions/
-│   │   ├── ingest-document-action.ts       # Server action Gemini extraction dengan konteks wallet & DANA deduplication
-│   │   ├── commit-batch-action.ts          # Server action batch insert transaksi atomik ke Turso
-│   │   ├── migration-action.ts             # Server action migrasi 455 baris berkas Money Manager
-│   │   └── transaction-actions.ts          # CRUD mutasi transaksi manual
+│   │   ├── ingest-document-action.ts         # Server action Gemini extraction dengan konteks wallet & DANA deduplication
+│   │   ├── commit-batch-action.ts            # Server action batch insert transaksi atomik ke Turso
+│   │   ├── migration-action.ts               # Server action migrasi 455 baris berkas Money Manager
+│   │   ├── export-slides-action.ts           # Server action export presentasi eksekutif HTML (slides skill)
+│   │   └── transaction-actions.ts            # CRUD mutasi transaksi manual
 │   ├── components/
-│   │   ├── ui/                             # Shadcn UI: Button, Card, Dialog, Table, Badge, Select, Tabs, Sheet, Accordion, Progress
-│   │   ├── layout/                         # Komponen Navigasi Dual-Mode:
-│   │   │   ├── sidebar.tsx                 # Desktop Collapsible Sidebar (260px -> 72px)
-│   │   │   ├── top-bar.tsx                 # Sticky Top Bar dengan quick wallet pills & month selector
-│   │   │   ├── command-menu.tsx            # Global Command Palette (⌘K via cmdk)
-│   │   │   └── bottom-nav.tsx              # iOS-Style Mobile Bottom Navigation Bar
-│   │   ├── dashboard/                      # NetWorthHeroBento, WalletCarousel, CashflowBento, RecentActivityBento
-│   │   ├── monthly/                        # Komponen Khusus Dashboard Bulanan:
-│   │   │   ├── monthly-header.tsx          # Month Navigator, Month-Year Picker, 4 Bento KPI Cards with Sparklines & Count-up
-│   │   │   ├── monthly-overview-tab.tsx    # Tab 1: Recharts Glow Area Chart & Inter-Wallet Transfers Flow Table
-│   │   │   ├── monthly-category-tab.tsx    # Tab 2: Dynamic Center-Stat Donut Chart & Hierarchical Subcategory Accordion
-│   │   │   ├── monthly-title-tab.tsx       # Tab 3: Merchant Leaderboard Table & Instant Search (Bebas Transfer)
-│   │   │   └── title-detail-drawer.tsx     # Slide-over Drawer rincian mutasi per judul terpilih
-│   │   └── import/                         # WalletSelector, BentoDropzone, StagingTable, PasswordDialog
+│   │   ├── ui/                               # Shadcn UI: Button, Card, Dialog, Table, Badge, Select, Tabs, Sheet, Accordion, Progress
+│   │   ├── icons/
+│   │   │   └── bespoke/                      # Vektor SVG Kustom (.agents icon/design generator):
+│   │   │       ├── emv-chip.tsx              # Brass EMV chip vector untuk kartu bank
+│   │   │       ├── tether-link.tsx           # Indikator rantai contra-tether transfer
+│   │   │       └── bank-crests.tsx           # Vektor emblem Mandiri, BCA, DANA, Cash
+│   │   ├── layout/                           # Komponen Navigasi Dual-Mode:
+│   │   │   ├── sidebar.tsx                   # Desktop Collapsible Sidebar (260px -> 72px)
+│   │   │   ├── top-bar.tsx                   # Sticky Top Bar dengan quick wallet pills & month selector
+│   │   │   ├── command-menu.tsx              # Global Command Palette (⌘K via cmdk)
+│   │   │   └── bottom-nav.tsx                # iOS-Style Mobile Bottom Navigation Bar
+│   │   ├── dashboard/                        # NetWorthHeroBento, WalletCarousel, CashflowBento, RecentActivityBento
+│   │   ├── monthly/                          # Komponen Khusus Dashboard Bulanan:
+│   │   │   ├── monthly-header.tsx            # Month Navigator, Month-Year Picker, 4 Bento KPI Cards, Tombol Ekspor Presentasi
+│   │   │   ├── monthly-overview-tab.tsx      # Tab 1: Recharts Glow Area Chart & Inter-Wallet Transfers Flow Table
+│   │   │   ├── monthly-category-tab.tsx      # Tab 2: Dynamic Center-Stat Donut Chart & Hierarchical Subcategory Accordion
+│   │   │   ├── monthly-title-tab.tsx         # Tab 3: Merchant Leaderboard Table & Instant Search (Bebas Transfer)
+│   │   │   └── title-detail-drawer.tsx       # Slide-over Drawer rincian mutasi per judul terpilih
+│   │   └── import/                           # WalletSelector, BentoDropzone, StagingTable, PasswordDialog
 │   ├── store/
-│   │   └── use-staging-store.ts            # Zustand v5 store untuk staging table & bulk actions
+│   │   └── use-staging-store.ts              # Zustand v5 store untuk staging table & bulk actions
 │   ├── db/
-│   │   ├── index.ts                        # Inisialisasi Turso libSQL client
-│   │   ├── schema.ts                       # Drizzle ORM Schema (accounts, categories, transactions, etc.)
-│   │   └── seed.ts                         # Seeder 16 akun & taksonomi kategori hierarkis
+│   │   ├── index.ts                          # Inisialisasi Turso libSQL client
+│   │   ├── schema.ts                         # Drizzle ORM Schema (accounts, categories, transactions, etc.)
+│   │   └── seed.ts                           # Seeder 16 akun & taksonomi kategori hierarkis
 │   ├── lib/
 │   │   ├── data/
-│   │   │   └── monthly-analytics.ts        # SQL aggregation data access layer terisolasi (Bebas Transfer)
-│   │   ├── money.ts                        # Utilitas konversi Sen <-> IDR, Excel Serial Date, & Number Parser
+│   │   │   └── monthly-analytics.ts          # SQL aggregation data access layer terisolasi (Bebas Transfer)
+│   │   ├── export/
+│   │   │   └── executive-deck-generator.ts   # Generator presentasi HTML mandiri berbasis Chart.js (slides skill)
+│   │   ├── money.ts                          # Utilitas konversi Sen <-> IDR, Excel Serial Date, & Number Parser
 │   │   ├── gemini/
-│   │   │   ├── schema.ts                   # Strict Zod JSON output schema
-│   │   │   ├── prompts.ts                  # System prompt builder dengan injeksi lokasi wallet
-│   │   │   └── extractor.ts                # @google/genai caller dengan responseJsonSchema & DANA post-filter
+│   │   │   ├── schema.ts                     # Strict Zod JSON output schema
+│   │   │   ├── prompts.ts                    # System prompt builder dengan injeksi lokasi wallet
+│   │   │   └── extractor.ts                  # @google/genai caller dengan responseJsonSchema & DANA post-filter
 │   │   ├── parser/
-│   │   │   ├── file-preprocessor.ts        # Normalisasi format PDF, CSV, Gambar
-│   │   │   └── excel-decryptor.ts          # Handler in-memory msoffice-crypto + exceljs multi-row merger
+│   │   │   ├── file-preprocessor.ts          # Normalisasi format PDF, CSV, Gambar
+│   │   │   └── excel-decryptor.ts            # Handler in-memory msoffice-crypto + exceljs multi-row merger
 │   │   ├── reconciliation/
-│   │   │   └── transfer-detector.ts        # Mesin deteksi pasangan contra intra-batch & database retroaktif
+│   │   │   └── transfer-detector.ts          # Mesin deteksi pasangan contra intra-batch & database retroaktif
 │   │   ├── migration/
-│   │   │   └── money-manager-importer.ts   # Parser 455 baris transaksi historis dengan serial date conversion
-│   │   └── utils.ts                        # Utility cn(), formatIDR(), konversi tanggal Indonesia
+│   │   │   └── money-manager-importer.ts     # Parser 455 baris transaksi historis dengan serial date conversion
+│   │   └── utils.ts                          # Utility cn(), formatIDR(), konversi tanggal Indonesia
 │   └── types/
-│       └── index.ts                        # Tipe data TypeScript global
+│       └── index.ts                          # Tipe data TypeScript global
 └── tests/
     ├── unit/
     │   ├── money-precision.test.ts
-    │   ├── transfer-isolation.test.ts      # Uji netralitas mutasi transfer terhadap income/expense
-    │   ├── transfer-detector.test.ts       # Uji mesin deteksi pasangan contra & multi-resolution window
+    │   ├── transfer-isolation.test.ts        # Uji netralitas mutasi transfer terhadap income/expense
+    │   ├── transfer-detector.test.ts         # Uji mesin deteksi pasangan contra & multi-resolution window
+    │   ├── token-validator.test.ts           # Uji kepatuhan token design-tokens.json dan bebas hardcoded hex
+    │   ├── slide-generator.test.ts           # Uji validitas keluaran HTML ekspor presentasi eksekutif
     │   ├── serial-date.test.ts
     │   ├── excel-decryptor.test.ts
     │   ├── dana-deduplication.test.ts
@@ -1453,3 +1657,13 @@ Didefinisikan pada `src/app/globals.css` dengan mapping `@theme inline`:
     - Setiap proses ekstraksi dokumen atau commit transaksi baru wajib melewatkan data melalui modul `src/lib/reconciliation/transfer-detector.ts`.
     - Transaksi debit dan kredit yang bernominal sen identik, berlawanan arah, pada akun berbeda, dan berada dalam jendela waktu bertingkat (toleransi $\pm$ 15 menit jika ada jam:menit, atau tanggal kalender sama jika hanya tanggal) **wajib otomatis dipasangkan**.
     - Saat commit, transaksi baru disimpan dengan `type = 'TRANSFER'`, dan jika berpasangan dengan transaksi lama di database Turso yang sebelumnya tercatat sebagai `EXPENSE` atau `INCOME`, transaksi lama tersebut **wajib di-update secara atomik** menjadi `type = 'TRANSFER'`, dipetakan `transferPairId` yang sama, dan dialihkan ke kategori `🔄 Pindah Uang` demi menjaga netralitas transfer 100%.
+14. **Anti-AI Generic Design Integrity & Bespoke Craft Execution:**
+    - Setiap komponen antarmuka dilarang keras menggunakan template klise AI (dilarang floating gradient blur orbs, dilarang emoji sebagai icon tombol/header, dilarang card grid 3 kolom simetris, dilarang raw unstyled currency).
+    - Wajib menerapkan spesifikasi Section 7.9 dan [MASTER.md](file:///C:/bima/Projects/NextJS/muara-money-manager-2/design-system/muara-money-manager/MASTER.md): kartu bento hairline specular (`.artisan-card`), micro-noise background (`.bg-artisan-noise`), komponen `<TabularCurrency />` 3-part hierarchy, visual kartu bank fisik otentik (`<PhysicalBankCard />`), tautan interaktif `<ContraPairTether />`, transisi fisik pegas (`active:scale-[0.985]`), dan micro-copy akuntansi institusional profesional.
+15. **Integrasi Ekosistem Brand & Desain .agents:**
+    - Seluruh perubahan desain dan penambahan komponen UI wajib mengacu pada Single Source of Truth di [docs/brand-guidelines.md](file:///C:/bima/Projects/NextJS/muara-money-manager-2/docs/brand-guidelines.md) dan hierarki 3-layer tokens di `assets/design-tokens.json`.
+    - Sinkronisasi token wajib dijalankan via `node scripts/sync-brand-tokens.cjs` sebelum build untuk memastikan konsistensi CSS variables pada `src/app/globals.css`.
+    - Logo dan aset ikon institusional (chip EMV, contra-tether) wajib menggunakan aset SVG lokal pre-generated dari `public/brand/` dan `src/components/icons/bespoke/` (tanpa gambar stok atau dependensi CDN eksternal).
+    - Fitur ekspor slide bulanan di `/monthly` wajib menggunakan generator mandiri `src/lib/export/executive-deck-generator.ts` dengan rendering visual Chart.js yang kompatibel offline.
+
+
