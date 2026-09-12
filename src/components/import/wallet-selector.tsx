@@ -10,7 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Sparkles, Building2, Smartphone, Landmark } from "lucide-react";
+import { Sparkles, Building2, Smartphone, Landmark, Banknote, Wallet } from "lucide-react";
 
 export interface AccountOption {
   id: string;
@@ -35,6 +35,8 @@ export function WalletSelector({
   const bankAccounts = accounts.filter((a) => a.type === "BANK");
   const ewalletAccounts = accounts.filter((a) => a.type === "E_WALLET");
   const investmentAccounts = accounts.filter((a) => a.type === "INVESTMENT");
+  const cashAccounts = accounts.filter((a) => a.type === "CASH");
+  const otherAccounts = accounts.filter((a) => a.type === "OTHER");
 
   const handleValueChange = (val: string) => {
     if (val === "AUTO") {
@@ -101,6 +103,34 @@ export function WalletSelector({
                 <span>Investasi &amp; Aset</span>
               </SelectLabel>
               {investmentAccounts.map((acc) => (
+                <SelectItem key={acc.id} value={acc.id}>
+                  {acc.name}
+                </SelectItem>
+              ))}
+            </SelectGroup>
+          )}
+
+          {cashAccounts.length > 0 && (
+            <SelectGroup>
+              <SelectLabel className="flex items-center gap-1.5 text-slate-400">
+                <Banknote className="w-3.5 h-3.5 text-slate-500" />
+                <span>Uang Tunai (Cash)</span>
+              </SelectLabel>
+              {cashAccounts.map((acc) => (
+                <SelectItem key={acc.id} value={acc.id}>
+                  {acc.name}
+                </SelectItem>
+              ))}
+            </SelectGroup>
+          )}
+
+          {otherAccounts.length > 0 && (
+            <SelectGroup>
+              <SelectLabel className="flex items-center gap-1.5 text-slate-400">
+                <Wallet className="w-3.5 h-3.5 text-slate-500" />
+                <span>Dompet Lainnya</span>
+              </SelectLabel>
+              {otherAccounts.map((acc) => (
                 <SelectItem key={acc.id} value={acc.id}>
                   {acc.name}
                 </SelectItem>

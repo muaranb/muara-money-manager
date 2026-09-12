@@ -19,14 +19,96 @@ export interface MigrationActionResult {
   };
 }
 
+export interface MigrationPreviewResult {
+  success: boolean;
+  message: string;
+  totalRows?: number;
+  fileName?: string;
+  summary?: {
+    expenseCount: number;
+    incomeCount: number;
+    transferCount: number;
+    modifiedBalCount: number;
+    totalAmountCents: number;
+  };
+  sampleTransactions?: {
+    date: string;
+    sourceAccount: string;
+    targetAccount: string | null;
+    category: string;
+    amountCents: number;
+    type: string;
+    description: string;
+  }[];
+}
+
 /**
- * Executes the historical migration of 455 transactions from Money Manager.
+ * Previews an uploaded Money Manager Excel file without saving to DB.
+ */
+export async function previewMoneyManagerFileAction(
+  formData: FormData
+): Promise<MigrationPreviewResult> {
+  try {
+    const file = formData.get("file") as File | null;
+    let buffer: Buffer;
+    let fileName = "Money Manager - Excel.xlsx";
+
+    if (file && file.size > 0) {
+      fileName = file.name;
+      const arrayBuffer = await file.arrayBuffer();
+      buffer = Buffer.from(arrayBuffer);
+    } else {
+      const filePath = path.resolve(process.cwd(), "data-example/Money Manager - Excel.xlsx");
+      const fs = await import("fs");
+      buffer = fs.readFileSync(filePath);
+    }
+
+    const parseResult = await parseMoneyManagerExcel(buffer);
+
+    return {
+      success: true,
+      message: `Parsed ${parseResult.totalRows} transactions from ${fileName}`,
+      totalRows: parseResult.totalRows,
+      fileName,
+      summary: parseResult.summary,
+      sampleTransactions: parseResult.transactions.slice(0, 5).map((t) => ({
+        date: t.date,
+        sourceAccount: t.sourceAccountName,
+        targetAccount: t.targetAccountName,
+        category: t.categoryName,
+        amountCents: t.amountCents,
+        type: t.type,
+        description: t.description,
+      })),
+    };
+  } catch (err: any) {
+    return {
+      success: false,
+      message: err?.message || "Gagal memproses preview file Money Manager.",
+    };
+  }
+}
+
+/**
+ * Executes the migration of transactions from an uploaded file or default file.
  * Recalculates all running account balances atomically.
  */
-export async function runLegacyMigrationAction(): Promise<MigrationActionResult> {
+export async function runLegacyMigrationAction(
+  formData?: FormData
+): Promise<MigrationActionResult> {
   try {
-    const filePath = path.resolve(process.cwd(), "data-example/Money Manager - Excel.xlsx");
-    const parseResult = await parseMoneyManagerExcel(filePath);
+    let parseResult;
+    let fileName = "Money Manager - Excel.xlsx";
+    const file = formData?.get("file") as File | null;
+
+    if (file && file.size > 0) {
+      fileName = file.name;
+      const arrayBuffer = await file.arrayBuffer();
+      parseResult = await parseMoneyManagerExcel(Buffer.from(arrayBuffer));
+    } else {
+      const filePath = path.resolve(process.cwd(), "data-example/Money Manager - Excel.xlsx");
+      parseResult = await parseMoneyManagerExcel(filePath);
+    }
 
     // 1. Fetch all accounts and categories from DB
     const allAccounts = await db.select().from(accounts);
@@ -51,7 +133,7 @@ export async function runLegacyMigrationAction(): Promise<MigrationActionResult>
     const [batch] = await db
       .insert(importBatches)
       .values({
-        fileName: "Money Manager - Excel.xlsx",
+        fileName,
         fileType: "xlsx",
         detectedSource: "MIGRATION_MONEY_MANAGER",
         totalExtracted: parseResult.totalRows,

@@ -57,6 +57,23 @@ export async function ingestDocumentAction(formData: FormData): Promise<IngestAc
 
     // 2. Route by file type
     if (fileExtension === "xlsx" || fileExtension === "xls") {
+      // Proactive check: If this is accidentally a Money Manager multi-wallet file
+      try {
+        const ExcelJS = (await import("exceljs")).default;
+        const testWb = new ExcelJS.Workbook();
+        await testWb.xlsx.load(buffer as any);
+        const ws = testWb.worksheets[0];
+        const row1Values = ws ? Object.values(ws.getRow(1).values || {}).map((v) => String(v).toLowerCase()) : [];
+        if (ws?.name === "Money Manager" || (row1Values.includes("account") && row1Values.includes("category"))) {
+          return {
+            success: false,
+            message: "File ini terdeteksi sebagai backup Money Manager (Multi-Wallet). Silakan gunakan tab 'Migrasi Money Manager (Multi-Wallet)' di atas untuk memigrasikan 16 dompet secara terisolasi.",
+          };
+        }
+      } catch {
+        // If loading fails, it is likely password-encrypted (Mandiri Excel)
+      }
+
       // Mandiri Encrypted Excel
       detectedSource = "EXCEL_MANDIRI";
       const mandiriRows = await decryptAndParseMandiriExcel(buffer, filePassword);
