@@ -82,74 +82,148 @@ export async function extractTransactionsWithGemini(params: {
   }
 
   const ai = new GoogleGenAI({ apiKey });
-  const model = process.env.GEMINI_MODEL || "gemini-2.5-flash";
+  const primaryModel = process.env.GEMINI_MODEL || "gemini-3.8-flash";
+  const fallbackEnv = process.env.GEMINI_FALLBACK_MODELS
+    ? process.env.GEMINI_FALLBACK_MODELS.split(",").map((m) => m.trim()).filter(Boolean)
+    : [
+        "gemini-3.6-flash",
+        "gemini-3.5-flash",
+        "gemini-3.5-flash-lite",
+        "gemini-flash-latest",
+      ];
+
+  // Deduplicate and maintain priority order
+  const candidateModels = Array.from(new Set([primaryModel, ...fallbackEnv]));
 
   const systemPrompt = buildIngestionSystemPrompt(
     params.selectedWalletName,
     params.knownAccounts
   );
 
-  // Exponential backoff retry logic (up to 3 attempts)
-  let attempts = 0;
   let lastError: any = null;
 
-  while (attempts < 3) {
-    attempts++;
-    try {
-      const response = await ai.models.generateContent({
-        model,
-        contents: [
-          { role: "user", parts: [{ text: systemPrompt }, ...params.contents] },
-        ],
-        config: {
-          responseMimeType: "application/json",
-          responseJsonSchema: transactionSchema,
-        },
-      });
+  for (let mIdx = 0; mIdx < candidateModels.length; mIdx++) {
+    const currentModel = candidateModels[mIdx];
+    let modelAttempts = 0;
+    const maxModelAttempts = 2;
 
-      const responseText = response.text || "{}";
-      const parsed = JSON.parse(responseText);
+    while (modelAttempts < maxModelAttempts) {
+      modelAttempts++;
+      try {
+        const response = await ai.models.generateContent({
+          model: currentModel,
+          contents: [
+            { role: "user", parts: [{ text: systemPrompt }, ...params.contents] },
+          ],
+          config: {
+            responseMimeType: "application/json",
+            responseJsonSchema: transactionSchema,
+          },
+        });
 
-      const detectedAccountName =
-        params.selectedWalletName || parsed.detectedAccountName || "Unknown Account";
-      const statementPeriod = parsed.statementPeriod || "";
+        const responseText = response.text || "{}";
+        const parsed = JSON.parse(responseText);
 
-      const rawTxs = Array.isArray(parsed.transactions) ? parsed.transactions : [];
+        const detectedAccountName =
+          params.selectedWalletName || parsed.detectedAccountName || "Unknown Account";
+        const statementPeriod = parsed.statementPeriod || "";
 
-      const transactions: ExtractedTransaction[] = rawTxs.map((t: any) => ({
-        date: t.date || new Date().toISOString().split("T")[0],
-        time: t.time || null,
-        description: t.description || "Transaksi Tanpa Judul",
-        note: t.note || null,
-        amount: Math.abs(Number(t.amount) || 0),
-        amountCents: toCents(Math.abs(Number(t.amount) || 0)),
-        type: (t.type as any) || "EXPENSE",
-        category: t.category || "⚠️ Tidak Terduga",
-        subcategory: t.subcategory || null,
-        sourceWalletName: detectedAccountName,
-        targetWalletName: t.targetWalletName || null,
-        confidence: typeof t.confidence === "number" ? t.confidence : 95,
-      }));
+        const rawTxs = Array.isArray(parsed.transactions) ? parsed.transactions : [];
 
-      // Apply server-level deduplication for DANA split payments
-      const deduplicated = deduplicateDanaTransactions(transactions);
+        const transactions: ExtractedTransaction[] = rawTxs.map((t: any) => ({
+          date: t.date || new Date().toISOString().split("T")[0],
+          time: t.time || null,
+          description: t.description || "Transaksi Tanpa Judul",
+          note: t.note || null,
+          amount: Math.abs(Number(t.amount) || 0),
+          amountCents: toCents(Math.abs(Number(t.amount) || 0)),
+          type: (t.type as any) || "EXPENSE",
+          category: t.category || "⚠️ Tidak Terduga",
+          subcategory: t.subcategory || null,
+          sourceWalletName: detectedAccountName,
+          targetWalletName: t.targetWalletName || null,
+          confidence: typeof t.confidence === "number" ? t.confidence : 95,
+        }));
 
-      return {
-        detectedAccountName,
-        statementPeriod,
-        transactions: deduplicated,
-      };
-    } catch (error: any) {
-      lastError = error;
-      if (error?.status === 429 || error?.message?.includes("429")) {
-        // Wait with exponential backoff before retry
-        const delayMs = Math.pow(2, attempts) * 1000;
-        await new Promise((res) => setTimeout(res, delayMs));
-      } else {
-        throw error;
+        // Apply server-level deduplication for DANA split payments
+        const deduplicated = deduplicateDanaTransactions(transactions);
+
+        return {
+          detectedAccountName,
+          statementPeriod,
+          transactions: deduplicated,
+        };
+      } catch (error: any) {
+        lastError = error;
+
+        const is503HighDemand =
+          error?.status === 503 ||
+          error?.code === 503 ||
+          error?.message?.includes("503") ||
+          error?.message?.includes("high demand") ||
+          error?.message?.includes("UNAVAILABLE");
+
+        const is404NotFound =
+          error?.status === 404 ||
+          error?.code === 404 ||
+          error?.message?.includes("404") ||
+          error?.message?.includes("not found");
+
+        const is429RateLimit =
+          error?.status === 429 ||
+          error?.code === 429 ||
+          error?.message?.includes("429") ||
+          error?.message?.includes("RESOURCE_EXHAUSTED");
+
+        const isQuotaLimitZero =
+          is429RateLimit &&
+          (error?.message?.includes("limit: 0") ||
+            error?.message?.includes("Quota exceeded for metric"));
+
+        if (is503HighDemand || is404NotFound || isQuotaLimitZero) {
+          const nextModel = candidateModels[mIdx + 1];
+          const reason = is503HighDemand
+            ? "503 High Demand"
+            : is404NotFound
+            ? "404 Not Found"
+            : "429 Quota Limit 0 (Model Unsupported / No Free Quota)";
+          if (nextModel) {
+            console.warn(
+              `[Gemini Extractor] Model "${currentModel}" unavailable (${reason}). Switching immediately to fallback model: "${nextModel}"`
+            );
+          }
+          // Break inner loop to immediately jump to next candidate model
+          break;
+        } else if (is429RateLimit) {
+          if (modelAttempts < maxModelAttempts) {
+            const delayMs = Math.pow(2, modelAttempts) * 1000;
+            await new Promise((res) => setTimeout(res, delayMs));
+          } else {
+            const nextModel = candidateModels[mIdx + 1];
+            if (nextModel) {
+              console.warn(
+                `[Gemini Extractor] Model "${currentModel}" rate limited (429). Switching to fallback model: "${nextModel}"`
+              );
+            }
+            break;
+          }
+        } else {
+          // Other unexpected error (e.g. schema error)
+          const nextModel = candidateModels[mIdx + 1];
+          if (nextModel) {
+            console.warn(
+              `[Gemini Extractor] Error pada "${currentModel}": ${error?.message || error}. Mencoba fallback: "${nextModel}"`
+            );
+            break;
+          }
+          throw error;
+        }
       }
     }
   }
 
-  throw lastError || new Error("Failed to extract transactions after 3 attempts.");
+  throw (
+    lastError ||
+    new Error("Semua model Gemini dalam urutan kaskade gagal mengekstrak dokumen.")
+  );
 }
