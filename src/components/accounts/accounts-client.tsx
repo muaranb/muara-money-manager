@@ -3,6 +3,8 @@
 import * as React from "react";
 import { Account } from "@/db/schema";
 import { TabularCurrency } from "@/components/ui/tabular-currency";
+import { PrivacyToggle } from "@/components/ui/privacy-toggle";
+import { usePrivacyStore } from "@/store/use-privacy-store";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { runLegacyMigrationAction } from "@/actions/migration-action";
@@ -35,6 +37,7 @@ export function AccountsClient({ initialAccounts }: AccountsClientProps) {
   const [accountList, setAccountList] = React.useState<Account[]>(initialAccounts);
   const [isMigrating, setIsMigrating] = React.useState<boolean>(false);
   const [migrationStatus, setMigrationStatus] = React.useState<string | null>(null);
+  const isBalanceHidden = usePrivacyStore((s) => s.isBalanceHidden);
 
   const totalNetWorthCents = accountList.reduce((sum, acc) => sum + acc.currentBalance, 0);
 
@@ -121,8 +124,14 @@ export function AccountsClient({ initialAccounts }: AccountsClientProps) {
             <div className="flex items-center gap-2 text-xs font-mono text-emerald-400">
               <ShieldCheck className="w-4 h-4" />
               <span>TOTAL KEKAYAAN BERSIH (NET WORTH)</span>
+              <PrivacyToggle size="sm" />
             </div>
-            <TabularCurrency cents={totalNetWorthCents} size="2xl" color="income" />
+            <TabularCurrency
+              cents={totalNetWorthCents}
+              size="2xl"
+              color="income"
+              isMasked={isBalanceHidden}
+            />
             <p className="text-xs text-slate-400">
               Konsolidasi saldo berjalan 16 rekening bank, e-wallet, dan aset investasi.
             </p>
@@ -170,7 +179,11 @@ export function AccountsClient({ initialAccounts }: AccountsClientProps) {
               {/* Card Bottom: Balance & Currency */}
               <div className="pt-2 border-t border-white/[0.08] flex items-center justify-between">
                 <span className="text-[10px] font-mono text-slate-500 uppercase">Saldo</span>
-                <TabularCurrency cents={acc.currentBalance} size="sm" />
+                <TabularCurrency
+                  cents={acc.currentBalance}
+                  size="sm"
+                  isMasked={isBalanceHidden}
+                />
               </div>
             </div>
           );

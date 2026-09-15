@@ -8,6 +8,7 @@ export interface TabularCurrencyProps extends React.HTMLAttributes<HTMLSpanEleme
   color?: "default" | "income" | "expense" | "transfer" | "muted";
   showSign?: boolean;
   showDecimals?: boolean;
+  isMasked?: boolean;
 }
 
 export function TabularCurrency({
@@ -16,6 +17,7 @@ export function TabularCurrency({
   color = "default",
   showSign = false,
   showDecimals = true,
+  isMasked = false,
   className,
   ...props
 }: TabularCurrencyProps) {
@@ -61,6 +63,28 @@ export function TabularCurrency({
   const currentColor = colorClasses[color];
 
   const sign = showSign && cents > 0 ? "+" : parts.sign;
+
+  if (isMasked) {
+    return (
+      <span
+        className={cn("inline-flex items-baseline font-mono select-none", className)}
+        {...props}
+      >
+        <span className={cn(currentSize.prefix, "text-slate-400 font-medium")}>
+          Rp
+        </span>
+        <span
+          className={cn(
+            currentSize.whole,
+            currentColor,
+            "tracking-widest font-mono"
+          )}
+        >
+          ••••••••
+        </span>
+      </span>
+    );
+  }
 
   return (
     <span
