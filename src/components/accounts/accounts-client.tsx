@@ -154,21 +154,29 @@ export function AccountsClient({ initialAccounts }: AccountsClientProps) {
           const maskedNumber = acc.accountNumber ? `•••• ${acc.accountNumber.slice(-4)}` : "Akun Terverifikasi";
 
           return (
-            <div
+            <Link
               key={acc.id}
-              className={`p-5 rounded-2xl border backdrop-blur-xl transition-all duration-300 hover:translate-y-[-2px] hover:shadow-xl flex flex-col justify-between h-48 relative overflow-hidden group ${themeClass}`}
+              href={`/transactions?wallet=${encodeURIComponent(acc.name)}`}
+              className={`p-5 rounded-2xl border backdrop-blur-xl transition-all duration-200 hover:translate-y-[-3px] hover:shadow-2xl active:scale-[0.98] flex flex-col justify-between h-48 relative overflow-hidden group cursor-pointer focus-visible:ring-2 focus-visible:ring-emerald-400 focus:outline-none ${themeClass}`}
+              title={`Buka riwayat transaksi untuk ${acc.name}`}
+              aria-label={`Buka riwayat transaksi untuk ${acc.name}`}
             >
-              {/* Card Top: Chip & Type */}
+              {/* Card Top: Chip & Type + Affordance Icon */}
               <div className="flex items-center justify-between">
                 <EmvChipSvg />
-                <span className="text-[10px] font-mono font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-white/10 text-white border border-white/10">
-                  {acc.type}
-                </span>
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[10px] font-mono font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-white/10 text-white border border-white/10">
+                    {acc.type}
+                  </span>
+                  <div className="w-6 h-6 rounded-full bg-white/10 border border-white/10 flex items-center justify-center text-slate-400 group-hover:text-emerald-400 group-hover:bg-emerald-500/20 group-hover:border-emerald-500/30 transition-all duration-200">
+                    <ArrowUpRight className="w-3.5 h-3.5 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                  </div>
+                </div>
               </div>
 
               {/* Card Middle: Account Name & Number */}
               <div className="space-y-1 my-auto">
-                <h3 className="font-bold text-slate-100 text-sm tracking-tight truncate" title={acc.name}>
+                <h3 className="font-bold text-slate-100 text-sm tracking-tight truncate group-hover:text-emerald-300 transition-colors" title={acc.name}>
                   {acc.name}
                 </h3>
                 <div className="font-mono text-[11px] text-slate-400">
@@ -178,14 +186,14 @@ export function AccountsClient({ initialAccounts }: AccountsClientProps) {
 
               {/* Card Bottom: Balance & Currency */}
               <div className="pt-2 border-t border-white/[0.08] flex items-center justify-between">
-                <span className="text-[10px] font-mono text-slate-500 uppercase">Saldo</span>
+                <span className="text-[10px] font-mono text-slate-500 uppercase group-hover:text-slate-400 transition-colors">Saldo</span>
                 <TabularCurrency
                   cents={acc.currentBalance}
                   size="sm"
                   isMasked={isBalanceHidden}
                 />
               </div>
-            </div>
+            </Link>
           );
         })}
       </div>
