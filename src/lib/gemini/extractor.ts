@@ -116,6 +116,7 @@ export async function extractTransactionsWithGemini(params: {
             { role: "user", parts: [{ text: systemPrompt }, ...params.contents] },
           ],
           config: {
+            temperature: 0,
             responseMimeType: "application/json",
             responseJsonSchema: transactionSchema,
           },
@@ -130,20 +131,32 @@ export async function extractTransactionsWithGemini(params: {
 
         const rawTxs = Array.isArray(parsed.transactions) ? parsed.transactions : [];
 
-        const transactions: ExtractedTransaction[] = rawTxs.map((t: any) => ({
-          date: t.date || new Date().toISOString().split("T")[0],
-          time: t.time || null,
-          description: t.description || "Transaksi Tanpa Judul",
-          note: t.note || null,
-          amount: Math.abs(Number(t.amount) || 0),
-          amountCents: toCents(Math.abs(Number(t.amount) || 0)),
-          type: (t.type as any) || "EXPENSE",
-          category: t.category || "⚠️ Tidak Terduga",
-          subcategory: t.subcategory || null,
-          sourceWalletName: detectedAccountName,
-          targetWalletName: t.targetWalletName || null,
-          confidence: typeof t.confidence === "number" ? t.confidence : 95,
-        }));
+        const transactions: ExtractedTransaction[] = rawTxs.map((t: any) => {
+          const rawTime = typeof t.time === "string" ? t.time.trim() : null;
+          const cleanTime =
+            !rawTime ||
+            rawTime === "null" ||
+            rawTime === "undefined" ||
+            rawTime === "00:00:00" ||
+            rawTime === "00:00"
+              ? null
+              : rawTime;
+
+          return {
+            date: t.date || new Date().toISOString().split("T")[0],
+            time: cleanTime,
+            description: t.description || "Transaksi Tanpa Judul",
+            note: t.note || null,
+            amount: Math.abs(Number(t.amount) || 0),
+            amountCents: toCents(Math.abs(Number(t.amount) || 0)),
+            type: (t.type as any) || "EXPENSE",
+            category: t.category || "⚠️ Tidak Terduga",
+            subcategory: t.subcategory || null,
+            sourceWalletName: detectedAccountName,
+            targetWalletName: t.targetWalletName || null,
+            confidence: typeof t.confidence === "number" ? t.confidence : 95,
+          };
+        });
 
         // Apply server-level deduplication for DANA split payments
         const deduplicated = deduplicateDanaTransactions(transactions);

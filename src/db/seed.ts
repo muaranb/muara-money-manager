@@ -161,17 +161,17 @@ export const MASTER_CATEGORIES = [
   },
 ];
 
-export async function seedDatabase() {
+export async function seedDatabase(targetDb: any = db) {
   console.log("🌱 Seeding Master Accounts...");
   for (const acc of MASTER_ACCOUNTS) {
-    const existing = await db
+    const existing = await targetDb
       .select()
       .from(accounts)
       .where(eq(accounts.name, acc.name))
       .limit(1);
 
     if (existing.length === 0) {
-      await db.insert(accounts).values({
+      await targetDb.insert(accounts).values({
         name: acc.name,
         type: acc.type,
         accountNumber: acc.accountNumber,
@@ -185,7 +185,7 @@ export async function seedDatabase() {
   console.log("🌱 Seeding Categories & Subcategories...");
   for (const cat of MASTER_CATEGORIES) {
     let catRecord = (
-      await db
+      await targetDb
         .select()
         .from(categories)
         .where(eq(categories.name, cat.name))
@@ -193,7 +193,7 @@ export async function seedDatabase() {
     )[0];
 
     if (!catRecord) {
-      const [inserted] = await db
+      const [inserted] = await targetDb
         .insert(categories)
         .values({
           name: cat.name,
@@ -206,14 +206,14 @@ export async function seedDatabase() {
 
     if (catRecord) {
       for (const sub of cat.subcategories) {
-        const existingSub = await db
+        const existingSub = await targetDb
           .select()
           .from(subcategories)
           .where(eq(subcategories.name, sub))
           .limit(1);
 
         if (existingSub.length === 0) {
-          await db.insert(subcategories).values({
+          await targetDb.insert(subcategories).values({
             categoryId: catRecord.id,
             name: sub,
           });

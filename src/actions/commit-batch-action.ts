@@ -3,7 +3,8 @@
 import { db } from "@/db";
 import { accounts, categories, transactions, importBatches } from "@/db/schema";
 import { CandidateTransaction } from "@/lib/reconciliation/transfer-detector";
-import { eq, sql } from "drizzle-orm";
+import { markDuplicateCandidates, sanitizeTimeString } from "@/lib/reconciliation/fingerprint";
+import { and, eq, gte, lte, inArray, sql } from "drizzle-orm";
 
 export interface CommitBatchResult {
   success: boolean;
@@ -13,7 +14,7 @@ export interface CommitBatchResult {
 
 /**
  * Atomically commits approved staging transactions to Turso Database
- * and recalculates running balances for all affected accounts.
+ * with server-side duplicate defense, and recalculates running balances for all affected accounts.
  */
 export async function commitBatchAction(
   batchId: string | null,
@@ -39,10 +40,58 @@ export async function commitBatchAction(
 
     const pindahUangCatId = categoryMap.get("🔄 pindah uang") || null;
 
-    // 2. Prepare transaction rows
+    // 2. Server-side Backend Defense Gate: Filter out duplicate transactions against Turso DB
+    const dates = stagingTransactions.map((st) => st.date).filter(Boolean);
+    let validStagingTransactions = stagingTransactions;
+
+    if (dates.length > 0) {
+      const minDate = dates.reduce((a, b) => (a < b ? a : b));
+      const maxDate = dates.reduce((a, b) => (a > b ? a : b));
+
+      const involvedAccountIds = Array.from(
+        new Set(
+          stagingTransactions
+            .map((st) => accountMap.get(st.sourceWalletName.toLowerCase()))
+            .filter((id): id is string => Boolean(id))
+        )
+      );
+
+      if (involvedAccountIds.length > 0) {
+        const existingTxs = await db
+          .select({
+            accountId: transactions.accountId,
+            date: transactions.date,
+            time: transactions.time,
+            amount: transactions.amount,
+            type: transactions.type,
+            description: transactions.description,
+          })
+          .from(transactions)
+          .where(
+            and(
+              inArray(transactions.accountId, involvedAccountIds),
+              gte(transactions.date, minDate),
+              lte(transactions.date, maxDate)
+            )
+          );
+
+        const marked = markDuplicateCandidates(stagingTransactions, existingTxs, accountMap);
+        validStagingTransactions = marked.filter((m) => !m.isDuplicate);
+      }
+    }
+
+    if (validStagingTransactions.length === 0) {
+      return {
+        success: true,
+        message: "Seluruh transaksi yang dipilih sudah tercatat di buku besar database (0 mutasi baru disisipkan).",
+        committedCount: 0,
+      };
+    }
+
+    // 3. Prepare transaction rows
     const affectedAccountIds = new Set<string>();
 
-    const rowsToInsert = stagingTransactions.map((st) => {
+    const rowsToInsert = validStagingTransactions.map((st) => {
       const sourceAccId = accountMap.get(st.sourceWalletName.toLowerCase());
       if (!sourceAccId) {
         throw new Error(`Unknown source wallet: "${st.sourceWalletName}"`);
@@ -70,7 +119,7 @@ export async function commitBatchAction(
         amount: st.amountCents,
         type: st.type,
         date: st.date,
-        time: st.time || null,
+        time: sanitizeTimeString(st.time) || null,
         description: st.description,
         note: null,
         sourceType: "MANUAL" as const,
@@ -129,7 +178,7 @@ export async function commitBatchAction(
       await db
         .update(importBatches)
         .set({
-          totalCommitted: stagingTransactions.length,
+          totalCommitted: validStagingTransactions.length,
           status: "COMMITTED",
         })
         .where(eq(importBatches.id, batchId));
@@ -137,8 +186,8 @@ export async function commitBatchAction(
 
     return {
       success: true,
-      message: `Successfully committed ${stagingTransactions.length} transactions to database.`,
-      committedCount: stagingTransactions.length,
+      message: `Sukses menyimpan ${validStagingTransactions.length} transaksi baru ke database.`,
+      committedCount: validStagingTransactions.length,
     };
   } catch (error: any) {
     return {

@@ -38,6 +38,7 @@ export function ImportClient({ accounts }: ImportClientProps) {
     batchId,
     detectedAccountName,
     transactions,
+    selectedRowIds,
     setBatch,
     reset,
   } = useStagingStore();
@@ -114,11 +115,20 @@ export function ImportClient({ accounts }: ImportClientProps) {
   };
 
   const handleCommit = async () => {
+    const selectedTransactions = transactions.filter((t) => selectedRowIds.includes(t.id));
+    if (selectedTransactions.length === 0) {
+      setStatusMessage({
+        type: "error",
+        text: "Tidak ada transaksi baru yang dipilih untuk disimpan (seluruh mutasi terdeteksi duplikat).",
+      });
+      return;
+    }
+
     setIsCommitting(true);
     setStatusMessage({ type: "info", text: "Menyimpan transaksi ke database Turso..." });
 
     try {
-      const result = await commitBatchAction(batchId, transactions);
+      const result = await commitBatchAction(batchId, selectedTransactions);
       if (result.success) {
         setStatusMessage({
           type: "success",

@@ -10,6 +10,7 @@
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
     "db:seed": "tsx src/db/seed.ts",
+    "db:reset": "tsx scripts/db-reset.ts",
     "tokens:sync": "node scripts/sync-brand-tokens.cjs",
     "test": "vitest run",
     "test:watch": "vitest",

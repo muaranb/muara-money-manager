@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "@/db";
-import { accounts, importBatches } from "@/db/schema";
+import { accounts, importBatches, transactions } from "@/db/schema";
 import { decryptAndParseMandiriExcel } from "@/lib/parser/excel-decryptor";
 import { preprocessBluCsv } from "@/lib/parser/file-preprocessor";
 import { extractTransactionsWithGemini, ExtractedTransaction } from "@/lib/gemini/extractor";
@@ -9,8 +9,9 @@ import {
   detectIntraBatchContraTransfers,
   CandidateTransaction,
 } from "@/lib/reconciliation/transfer-detector";
+import { markDuplicateCandidates } from "@/lib/reconciliation/fingerprint";
 import { toCents } from "@/lib/money";
-import { eq } from "drizzle-orm";
+import { and, eq, gte, lte, inArray } from "drizzle-orm";
 
 export interface IngestActionResult {
   success: boolean;
@@ -18,6 +19,8 @@ export interface IngestActionResult {
   batchId?: string;
   detectedAccountName?: string;
   transactions?: CandidateTransaction[];
+  duplicateCount?: number;
+  newCount?: number;
 }
 
 export async function ingestDocumentAction(formData: FormData): Promise<IngestActionResult> {
@@ -187,7 +190,55 @@ export async function ingestDocumentAction(formData: FormData): Promise<IngestAc
     // 3. Run Contra-Transfer Pairing
     const reconciledList = detectIntraBatchContraTransfers(extractedList);
 
-    // 4. Create Pending Import Batch Record in DB
+    // 4. Run Smart Fingerprint Duplicate Detection against DB
+    const dates = reconciledList.map((t) => t.date).filter(Boolean);
+    let finalCandidateList = reconciledList;
+    let duplicateCount = 0;
+
+    if (dates.length > 0) {
+      const minDate = dates.reduce((a, b) => (a < b ? a : b));
+      const maxDate = dates.reduce((a, b) => (a > b ? a : b));
+
+      const accountMap = new Map<string, string>();
+      for (const a of allAccounts) {
+        accountMap.set(a.name.toLowerCase(), a.id);
+      }
+
+      const relevantAccountIds = Array.from(
+        new Set(
+          reconciledList
+            .map((t) => accountMap.get(t.sourceWalletName.toLowerCase()))
+            .filter((id): id is string => Boolean(id))
+        )
+      );
+
+      if (relevantAccountIds.length > 0) {
+        const existingTxs = await db
+          .select({
+            accountId: transactions.accountId,
+            date: transactions.date,
+            time: transactions.time,
+            amount: transactions.amount,
+            type: transactions.type,
+            description: transactions.description,
+          })
+          .from(transactions)
+          .where(
+            and(
+              inArray(transactions.accountId, relevantAccountIds),
+              gte(transactions.date, minDate),
+              lte(transactions.date, maxDate)
+            )
+          );
+
+        finalCandidateList = markDuplicateCandidates(reconciledList, existingTxs, accountMap);
+        duplicateCount = finalCandidateList.filter((t) => t.isDuplicate).length;
+      }
+    }
+
+    const newCount = finalCandidateList.length - duplicateCount;
+
+    // 5. Create Pending Import Batch Record in DB
     const [batch] = await db
       .insert(importBatches)
       .values({
@@ -195,18 +246,25 @@ export async function ingestDocumentAction(formData: FormData): Promise<IngestAc
         fileType: fileExtension,
         selectedAccountId: selectedAccountId !== "AUTO" ? selectedAccountId : null,
         detectedSource,
-        totalExtracted: reconciledList.length,
+        totalExtracted: finalCandidateList.length,
         totalCommitted: 0,
         status: "PENDING",
       })
       .returning();
 
+    const resultMessage =
+      duplicateCount > 0
+        ? `Mengekstrak ${finalCandidateList.length} transaksi (${newCount} baru, ${duplicateCount} sudah ada di buku besar).`
+        : `Berhasil mengekstrak ${finalCandidateList.length} transaksi dari ${fileName}.`;
+
     return {
       success: true,
-      message: `Extracted ${reconciledList.length} transactions from ${fileName}.`,
+      message: resultMessage,
       batchId: batch.id,
       detectedAccountName: detectedAccount,
-      transactions: reconciledList,
+      transactions: finalCandidateList,
+      duplicateCount,
+      newCount,
     };
   } catch (error: any) {
     return {

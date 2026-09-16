@@ -51,8 +51,17 @@ export function StagingTable({
   const [bulkWallet, setBulkWallet] = React.useState<string>("");
   const [ambiguousRowId, setAmbiguousRowId] = React.useState<string | null>(null);
 
+  const duplicateCount = React.useMemo(() => {
+    return transactions.filter((t) => t.isDuplicate).length;
+  }, [transactions]);
+
+  const selectableTransactions = React.useMemo(() => {
+    return transactions.filter((t) => !t.isDuplicate);
+  }, [transactions]);
+
   const isAllSelected =
-    transactions.length > 0 && selectedRowIds.length === transactions.length;
+    selectableTransactions.length > 0 &&
+    selectableTransactions.every((t) => selectedRowIds.includes(t.id));
 
   const handleBulkReassign = () => {
     if (!bulkWallet) return;
@@ -86,12 +95,19 @@ export function StagingTable({
     <div className="space-y-4">
       {/* Top Action & Bulk Toolbar */}
       <div className="artisan-card p-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <div className="text-sm font-sans text-slate-300">
-            <span className="font-mono font-bold text-emerald-400">{transactions.length}</span> Transaksi Staging
+        <div className="flex flex-wrap items-center gap-2">
+          <div className="text-sm font-sans text-slate-300 flex flex-wrap items-center gap-2">
+            <span>
+              <strong className="font-mono font-bold text-emerald-400">{transactions.length}</strong> Transaksi Terbaca
+            </span>
+            {duplicateCount > 0 && (
+              <span className="px-2 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-mono">
+                {duplicateCount} Duplikat Terdeteksi
+              </span>
+            )}
             {selectedRowIds.length > 0 && (
-              <span className="text-slate-400 ml-1">
-                (<span className="font-mono text-white">{selectedRowIds.length}</span> terpilih)
+              <span className="text-slate-400">
+                (<strong className="font-mono text-white">{selectedRowIds.length}</strong> siap disimpan)
               </span>
             )}
           </div>
@@ -145,11 +161,16 @@ export function StagingTable({
 
           <Button
             onClick={onCommit}
-            disabled={isCommitting}
-            className="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold shadow-lg shadow-emerald-500/20 text-xs sm:text-sm h-9 px-5"
+            disabled={isCommitting || selectedRowIds.length === 0}
+            className="bg-emerald-500 hover:bg-emerald-400 disabled:opacity-40 disabled:cursor-not-allowed text-slate-950 font-bold shadow-lg shadow-emerald-500/20 text-xs sm:text-sm h-9 px-5 transition-all"
+            title={selectedRowIds.length === 0 ? "Tidak ada transaksi baru yang dipilih untuk disimpan" : undefined}
           >
             <CheckCircle2 className="w-4 h-4 mr-1.5" />
-            {isCommitting ? "Menyimpan ke Turso..." : "Simpan &amp; Sinkronkan ke Database"}
+            {isCommitting
+              ? "Menyimpan ke Turso..."
+              : selectedRowIds.length === 0
+              ? "0 Transaksi Baru Dipilih"
+              : `Simpan & Sinkronkan (${selectedRowIds.length} Transaksi)`}
           </Button>
         </div>
       </div>
@@ -183,6 +204,7 @@ export function StagingTable({
                   checked={isAllSelected}
                   onChange={(e) => (e.target.checked ? selectAll() : clearSelection())}
                   className="rounded border-white/20 bg-slate-900 text-emerald-500 focus:ring-emerald-400/50 cursor-pointer"
+                  title="Pilih seluruh transaksi baru"
                 />
               </TableHead>
               <TableHead className="w-28">Tanggal</TableHead>
@@ -200,7 +222,13 @@ export function StagingTable({
               return (
                 <TableRow
                   key={tx.id}
-                  className={`group ${isSelected ? "bg-emerald-500/[0.05]" : ""}`}
+                  className={`group transition-colors ${
+                    isSelected
+                      ? "bg-emerald-500/[0.05]"
+                      : tx.isDuplicate
+                      ? "bg-amber-500/[0.02]"
+                      : ""
+                  }`}
                 >
                   <TableCell className="text-center">
                     <input
@@ -224,8 +252,15 @@ export function StagingTable({
                   </TableCell>
 
                   <TableCell>
-                    <div className="font-medium text-slate-200 text-xs sm:text-sm line-clamp-1">
-                      {tx.description}
+                    <div className="space-y-1">
+                      <div className="font-medium text-slate-200 text-xs sm:text-sm line-clamp-1">
+                        {tx.description}
+                      </div>
+                      {tx.isDuplicate && (
+                        <div className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-amber-500/10 border border-amber-500/20 text-amber-300 font-mono text-[10px]">
+                          <span>⚠️ Sudah Ada di Buku Besar (Duplikat)</span>
+                        </div>
+                      )}
                     </div>
                   </TableCell>
 

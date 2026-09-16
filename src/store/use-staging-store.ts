@@ -37,7 +37,7 @@ export const useStagingStore = create<StagingState>((set) => ({
       batchId,
       detectedAccountName,
       transactions,
-      selectedRowIds: [],
+      selectedRowIds: transactions.filter((t) => !t.isDuplicate).map((t) => t.id),
     }),
 
   toggleSelectRow: (id) =>
@@ -52,7 +52,7 @@ export const useStagingStore = create<StagingState>((set) => ({
 
   selectAll: () =>
     set((state) => ({
-      selectedRowIds: state.transactions.map((t) => t.id),
+      selectedRowIds: state.transactions.filter((t) => !t.isDuplicate).map((t) => t.id),
     })),
 
   clearSelection: () => set({ selectedRowIds: [] }),

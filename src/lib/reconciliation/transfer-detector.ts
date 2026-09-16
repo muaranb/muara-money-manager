@@ -15,6 +15,8 @@ export interface CandidateTransaction {
   transferPairId?: string | null;
   pairConfidence?: "HIGH" | "AMBIGUOUS" | "NONE";
   candidatePairIds?: string[];
+  isDuplicate?: boolean;
+  duplicateReason?: string;
 }
 
 /**
