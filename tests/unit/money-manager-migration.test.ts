@@ -57,4 +57,13 @@ describe("Legacy Money Manager Migration Parser", () => {
       }
     }
   });
+
+  it("enforces idempotency and rejects duplicate migration execution", async () => {
+    const { runLegacyMigrationAction } = await import("@/actions/migration-action");
+    const result = await runLegacyMigrationAction();
+
+    expect(result.success).toBe(false);
+    expect(result.totalMigrated).toBe(0);
+    expect(result.message).toContain("sudah pernah dimigrasikan");
+  });
 });

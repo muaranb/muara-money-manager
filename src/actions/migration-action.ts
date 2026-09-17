@@ -110,6 +110,22 @@ export async function runLegacyMigrationAction(
       parseResult = await parseMoneyManagerExcel(filePath);
     }
 
+    // 0. Idempotency Gate: Prevent duplicate execution if Money Manager data is already committed
+    const existingMigrationBatch = await db
+      .select({ id: importBatches.id })
+      .from(importBatches)
+      .where(eq(importBatches.detectedSource, "MIGRATION_MONEY_MANAGER"))
+      .limit(1);
+
+    if (existingMigrationBatch.length > 0) {
+      return {
+        success: false,
+        message:
+          "Data historis Money Manager sudah pernah dimigrasikan ke buku besar. Untuk mencegah penggandaan saldo, migrasi berulang tidak diizinkan.",
+        totalMigrated: 0,
+      };
+    }
+
     // 1. Fetch all accounts and categories from DB
     const allAccounts = await db.select().from(accounts);
     const accountMap = new Map<string, string>(); // name -> id

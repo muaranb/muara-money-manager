@@ -7,13 +7,11 @@ import { PrivacyToggle } from "@/components/ui/privacy-toggle";
 import { usePrivacyStore } from "@/store/use-privacy-store";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { runLegacyMigrationAction } from "@/actions/migration-action";
 import {
   Wallet2,
   Building2,
   Smartphone,
   TrendingUp,
-  RefreshCw,
   ArrowUpRight,
   ShieldCheck,
   CreditCard,
@@ -35,35 +33,9 @@ function EmvChipSvg() {
 
 export function AccountsClient({ initialAccounts }: AccountsClientProps) {
   const [accountList, setAccountList] = React.useState<Account[]>(initialAccounts);
-  const [isMigrating, setIsMigrating] = React.useState<boolean>(false);
-  const [migrationStatus, setMigrationStatus] = React.useState<string | null>(null);
   const isBalanceHidden = usePrivacyStore((s) => s.isBalanceHidden);
 
   const totalNetWorthCents = accountList.reduce((sum, acc) => sum + acc.currentBalance, 0);
-
-  const handleRunMigration = async () => {
-    if (!confirm("Jalankan migrasi 455 transaksi historis dari Money Manager? Seluruh saldo 16 akun akan dihitung ulang secara otomatis.")) {
-      return;
-    }
-
-    setIsMigrating(true);
-    setMigrationStatus("Mengimpor 455 transaksi historis dari Money Manager...");
-
-    try {
-      const res = await runLegacyMigrationAction();
-      if (res.success) {
-        setMigrationStatus(`Sukses: ${res.message}`);
-        // Reload page to refresh account balances
-        window.location.reload();
-      } else {
-        setMigrationStatus(`Error: ${res.message}`);
-      }
-    } catch (err: any) {
-      setMigrationStatus(`Error: ${err?.message || "Gagal migrasi"}`);
-    } finally {
-      setIsMigrating(false);
-    }
-  };
 
   const getCardTheme = (acc: Account) => {
     const name = acc.name.toLowerCase();
@@ -97,25 +69,7 @@ export function AccountsClient({ initialAccounts }: AccountsClientProps) {
             Manajemen saldo real-time dan buku besar 16 kantong keuangan pengguna.
           </p>
         </div>
-
-        <div className="flex items-center gap-3">
-          <Button
-            onClick={handleRunMigration}
-            disabled={isMigrating}
-            variant="outline"
-            className="text-xs h-9 font-semibold border-amber-500/30 text-amber-300 hover:bg-amber-500/10"
-          >
-            <RefreshCw className={`w-3.5 h-3.5 mr-1.5 ${isMigrating ? "animate-spin" : ""}`} />
-            <span>Migrasi Data Money Manager (455 Transaksi)</span>
-          </Button>
-        </div>
       </div>
-
-      {migrationStatus && (
-        <div className="p-3 rounded-xl bg-slate-900 border border-white/10 text-xs font-mono text-slate-200">
-          {migrationStatus}
-        </div>
-      )}
 
       {/* Net Worth Hero Bento */}
       <Card className="p-6 relative overflow-hidden bg-gradient-to-r from-emerald-950/40 via-slate-900 to-indigo-950/40 border-white/15">
